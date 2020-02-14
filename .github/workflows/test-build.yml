@@ -1,0 +1,28 @@
+on: [push, pull_request]
+name: Test, build
+jobs:
+  master:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Build and start
+        run: |
+          docker volume create --name=od-postgres
+          docker-compose -f docker-compose.dev.yml -f docker-compose.test.yml up -d
+
+      - name: Sleep
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
+
+      - name: Check docker state
+        run: docker ps -a
+
+      - name: Grub startup logs
+        run: |
+          docker logs od-backend-node
+
+      - name: Test
+        run: docker exec od-backend-node npm run test

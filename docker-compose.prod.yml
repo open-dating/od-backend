@@ -1,0 +1,46 @@
+version: '2'
+
+services:
+  node.od-backend:
+    container_name: od-backend-node
+    image: node:12.13.0-alpine
+    working_dir: /app
+    ports:
+      - 4300:4300
+    volumes:
+      - ./:/app
+    environment:
+      - ROOT_PATH=/app
+      - PORT=4300
+      - DOMAIN=95.217.132.195
+      - HOST=http://95.217.132.195:4300
+      - DB_HOST=od-backend-postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=od
+      - JWT_SECRET=${JWT_SECRET}
+      - PASS_HASH_SALT=${PASS_HASH_SALT}
+      - DNN_FACE_URL=${DNN_FACE_URL}
+      - DNN_NSFW_URL=${DNN_NSFW_URL}
+    networks:
+      - od-network
+    command: sh -c "npm i && npm run typeorm:run && npm run build && npm run start:prod"
+
+  postgres.od-backend:
+    container_name: od-backend-postgres
+    image: mdillon/postgis:11-alpine
+    environment:
+      POSTGRES_DB: od
+      POSTGRES_PASSWORD: ${DB_PASS}
+    volumes:
+      - od-postgres:/var/lib/postgresql/data
+    networks:
+      - od-network
+
+volumes:
+  od-postgres:
+    external: true
+
+networks:
+  od-network:

@@ -1,0 +1,5 @@
+version: '2'
+
+services:
+  node.od-backend:
+    command: sh -c "npm i && npm run typeorm:run && npm run build && npm run start:prod"

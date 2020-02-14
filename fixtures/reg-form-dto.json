@@ -1,0 +1,27 @@
+{
+  "email": "foo@bar.com",
+  "pass": "foobar",
+  "firstname": "jonh",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      37.6174943,
+      55.7504461
+    ]
+  },
+  "selfieId": 1,
+  "photosIds": [
+    1,
+    2
+  ],
+  "bday": "1995-08-01T00:00:00+03:00",
+  "gender": "male",
+  "weight": 50,
+  "height": 170,
+  "useType": "rel",
+  "bio": "",
+  "acceptedUseDataInScience": true,
+  "tolerantPromise": true,
+  "honestyAndGoodnessPromise": true,
+  "tos": true
+}

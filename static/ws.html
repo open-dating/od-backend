@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+</head>
+<body>
+
+<textarea id="log" style="width:100%; height: 80vh"></textarea>
+
+<script>
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZvb0BiYXIuY29tIiwiaWQiOjEwNiwicm9sZSI6InVzZXIiLCJpYXQiOjE1Nzg5OTMwOTMsImV4cCI6MTYxMDUyOTA5M30.KKTj3NoJDng0LY21jbp1OAJZj2HP-h2Nq6_r_kz77ZI'
+  const socket = io(`http://0.0.0.0:4300/?token=${token.trim()}`, {
+    path: '/api/v1/ws'
+  })
+
+  const WsOutEventName = {
+    ImCreateDialog: 'im.createDialog',
+    ImNewMessage : 'im.message',
+    AuthError: 'auth.error',
+  }
+  const WsInEventName = {
+    UserActive: 'user.active',
+  }
+
+  socket.on(WsOutEventName.AuthError, (d) => logData(WsOutEventName.AuthError, d))
+  socket.on('error', (d) => logData('error', d))
+
+  setInterval(function () {
+    socket.emit(WsInEventName.UserActive, {
+      userDtInUTC: new Date().toUTCString()
+    })
+  }, 15000)
+
+  function logData (eventName, data) {
+    console.log(log)
+    log.innerHTML += `
+${new Date().toLocaleString()}
+${JSON.stringify({eventName, data}, null, " ")}
+`
+  }
+</script>
+
+</body>
+</html>
