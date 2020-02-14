@@ -12,8 +12,8 @@ services:
     environment:
       - ROOT_PATH=/app
       - PORT=4300
-      - DOMAIN=95.217.132.195
-      - HOST=http://95.217.132.195:4300
+      - DOMAIN=app.open-dating.org
+      - HOST=https://app.open-dating.org
       - DB_HOST=od-backend-postgres
       - DB_PORT=5432
       - DB_USERNAME=postgres
