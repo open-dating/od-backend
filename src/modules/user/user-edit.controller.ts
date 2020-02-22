@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, HttpStatus, Patch, Request, UseGuards, UseInterceptors} from '@nestjs/common'
+import {Body, Controller, Patch, Request, UseGuards, UseInterceptors} from '@nestjs/common'
 import {UserService} from './user.service'
 import {AuthGuard} from '@nestjs/passport'
-import {ApiBearerAuth, ApiBody, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger'
+import {ApiBearerAuth, ApiBody, ApiResponse, ApiTags} from '@nestjs/swagger'
 import {User} from './user.entity'
 import {RestDataProtectInterceptor} from '../shared/interceptors/rest-data-protect.interceptor'
 import {UserRole} from './enum/user-role.enum'
@@ -10,7 +10,6 @@ import {LocationFormDto} from './dto/location-form-dto'
 import {FcmFormDto} from './dto/fcm-form-dto'
 import {EditFormDto} from './dto/edit-form-dto'
 import {SettingsFormDto} from './dto/settings-form-dto'
-import {HttpException} from '@nestjs/common/exceptions/http.exception'
 import {LangFormDto} from './dto/lang-form-dto'
 
 @ApiTags('user')
