@@ -12,6 +12,7 @@ import * as moment from 'moment'
 import {UserUseType} from './enum/user-use-type.enum'
 import {Complaint} from '../complaint/complaint.entity'
 import {UserHabits} from './user-habits.entity'
+import {UserReasonRemove} from './enum/user-reason-remove.enum'
 
 @Exclude()
 @Entity()
@@ -81,6 +82,32 @@ export class User {
 
   @Column({length: 64})
   passHash: string
+
+  @ApiProperty()
+  @Expose()
+  @Column({length: 64, default: 'en'})
+  language: string
+
+  @Index()
+  @Column('boolean', {default: false})
+  @ApiProperty()
+  @Expose()
+  isRemoved: boolean
+
+  @ApiProperty()
+  @Expose({groups: [UserRole.Admin]})
+  @Column({default: null})
+  removedAt: Date|null
+
+  @Index()
+  @ApiProperty()
+  @Expose({groups: [UserRole.Owner, UserRole.Admin]})
+  @Column({
+    type: 'enum',
+    enum: UserReasonRemove,
+    nullable: true,
+  })
+  reasonRemove: UserReasonRemove
 
   @ApiProperty({
     example: {

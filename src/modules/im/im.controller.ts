@@ -46,15 +46,13 @@ export class ImController {
     }
 
     const skip = Number(req.query.skip || 0)
-    const limit = Number(req.query.limit || 25)
+    const limit = Number(req.query.limit || 50)
 
     const data = await this.imService.findUserDialogs(relatedToUserId, {
       skip,
       limit,
       excludeBlocked: isAdmin ? false : true,
     })
-
-    await new Promise(resolve => setTimeout(resolve, 1000))
 
     const nextSkip = data.length >= limit ? Number(skip + data.length) : skip
 
@@ -85,15 +83,13 @@ export class ImController {
     }
 
     const olderThanId = Number(req.query.olderThanId || 0)
-    const limit = Number(req.query.limit || 25)
+    const limit = Number(req.query.limit || 50)
 
     const data = await this.imService.findDialogMessages(dialogId, {olderThanId, limit})
 
     const minId = data.reduce((min, msg) => {
       return msg.id < min ? msg.id : min
     }, Infinity)
-
-    await new Promise(resolve => setTimeout(resolve, 1000))
 
     return new ItemsListDto<ImMessage>(data, {limit, minId, dialog})
   }

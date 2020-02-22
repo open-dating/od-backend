@@ -16,6 +16,7 @@ import {StatisticItemDto} from '../shared/dto/statistic-item-dto'
 import {FCMService} from '../fcm/fcm.service'
 import {hasPhoneNumber} from '../../utils/detectors'
 import {MailService} from '../mail/mail.service'
+import {DialogReasonBlock} from './enum/dialog-reason-block.enum'
 
 @Injectable()
 export class ImService {
@@ -32,29 +33,6 @@ export class ImService {
   ) {}
 
   async createDialog(active: User, passive: User): Promise<CreatedDialog> {
-    const query = this.dialogRepository
-      .createQueryBuilder('dialog')
-
-    query.leftJoinAndSelect('dialog.users', 'users')
-      .andWhere(qb => {
-        const subQuery = qb.subQuery()
-          .select('rel.imDialogId')
-          .from('im_dialog_users_user', 'rel')
-          .where('rel.userId IN(:passiveId, :activeId)')
-          .groupBy('rel.imDialogId')
-          .having(`array_agg("rel"."userId" order by "rel"."userId") = :userIds`)
-          .getQuery()
-        return `${query.alias}.id IN ${subQuery}`
-      })
-    const userIds = [passive.id, active.id].sort()
-    query.setParameters({passiveId: passive.id, activeId: active.id, userIds})
-    // console.log(query.getQuery())
-
-    const exist = await query.getOne()
-    if (exist) {
-      return {exist: true, dialog: exist}
-    }
-
     const ent = new ImDialog()
     ent.isBlocked = false
     ent.users = [active, passive]
@@ -65,6 +43,14 @@ export class ImService {
       .sort((a, b) => a.id - b.id)
       .map(u => u.id)
       .join(':')
+
+    const exist = await this.dialogRepository.findOne({
+      relations: ['users'],
+      where: {compositeUsersKey: ent.compositeUsersKey},
+    })
+    if (exist) {
+      return {exist: true, dialog: exist}
+    }
 
     const dialog = await this.dialogRepository.save(ent)
 
@@ -135,7 +121,8 @@ export class ImService {
     const query = this.dialogRepository
       .createQueryBuilder('dialog')
 
-    query.leftJoinAndSelect('dialog.users', 'users')
+    query
+      .leftJoinAndSelect('dialog.users', 'users')
       .leftJoinAndSelect('users.photos', 'photos')
       .leftJoinAndSelect('dialog.unreadByUsers', 'unreadByUsers')
       .andWhere(qb => {
@@ -234,6 +221,7 @@ export class ImService {
   async blockDialog(dialog: ImDialog, userId: number): Promise<ImDialog> {
     dialog.isBlocked = true
     dialog.blockedAt = new Date()
+    dialog.blockReason = DialogReasonBlock.UserBlockDialog
 
     dialog.blockedBy = await this.userService.findById(userId)
 
@@ -267,5 +255,43 @@ export class ImService {
     const values = await query.getRawMany()
 
     return mapRawItemsToDto<StatisticItemDto>(values, () => new StatisticItemDto())
+  }
+
+  async removeDialogs(userId: number) {
+    const query = this.dialogRepository
+      .createQueryBuilder('dialog')
+
+    query
+      .leftJoinAndSelect('dialog.users', 'users')
+      .leftJoinAndSelect('users.photos', 'photos')
+      .andWhere(qb => {
+        const subQuery = qb.subQuery()
+          .select('rel.imDialogId')
+          .from('im_dialog_users_user', 'rel')
+          .where('rel.userId = :userId')
+          .getQuery()
+        return `${query.alias}.id IN ${subQuery}`
+      })
+
+    query.setParameters({userId})
+
+    const toRemove = await query.getMany()
+
+    const ids = toRemove.map(d => d.id)
+
+    await this.dialogRepository.update({
+      id: In(ids),
+    }, {
+      blockedAt: new Date(),
+      isBlocked: true,
+      blockReason: DialogReasonBlock.ProfileRemove,
+    })
+
+    for (const dialog of toRemove) {
+      for (const dialogUser of dialog.users) {
+        // send info for remove dialog from list
+        this.wsMediator.emitMessage(dialogUser.id, WsOutEvent.ImDialog, dialog)
+      }
+    }
   }
 }

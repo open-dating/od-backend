@@ -3,6 +3,7 @@ import {User} from '../user/user.entity'
 import {ApiProperty} from '@nestjs/swagger'
 import {ImMessage} from './im-message.entity'
 import {Expose} from 'class-transformer'
+import {DialogReasonBlock} from './enum/dialog-reason-block.enum'
 
 @Expose()
 @Entity()
@@ -43,6 +44,10 @@ export class ImDialog {
   blockedAt: Date|null
 
   blockedBy: User
+
+  @ApiProperty()
+  @Column({nullable: true, default: null})
+  blockReason: DialogReasonBlock
 
   @ApiProperty()
   @Index()

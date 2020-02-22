@@ -1,4 +1,4 @@
-import {Controller, Get, Request, UseGuards, UseInterceptors} from '@nestjs/common'
+import {Controller, Get, HttpStatus, Request, UseGuards, UseInterceptors} from '@nestjs/common'
 import {UserService} from './user.service'
 import {AuthGuard} from '@nestjs/passport'
 import {ApiBearerAuth, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger'
@@ -6,6 +6,7 @@ import {User} from './user.entity'
 import {ItemsListDto} from '../shared/dto/items-list-dto'
 import {RestDataProtectInterceptor} from '../shared/interceptors/rest-data-protect.interceptor'
 import {UserRole} from './enum/user-role.enum'
+import {HttpException} from '@nestjs/common/exceptions/http.exception'
 
 @ApiTags('user')
 @ApiBearerAuth()
@@ -30,8 +31,16 @@ export class UserController {
   })
   @UseInterceptors(RestDataProtectInterceptor())
   @ApiParam({name: 'userId', type: 'number'})
-  getProfile(@Request() req): Promise<User> {
-    return this.userService.findById(+req.params.userId)
+  async getProfile(@Request() req): Promise<User> {
+    const isAdmin = req.user.role === UserRole.Admin
+
+    const user = await this.userService.findById(+req.params.userId)
+
+    if (user.isRemoved && !isAdmin) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+    }
+
+    return user
   }
 
   @UseGuards(AuthGuard('jwt'))

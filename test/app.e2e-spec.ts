@@ -236,4 +236,56 @@ describe('App (e2e)', () => {
     expect(comp.body).toHaveProperty('id')
     expect(comp.body).toHaveProperty('text')
   })
+
+  it('remove user', async () => {
+    expect.assertions(4)
+
+    // get dialogs list for use in early
+    const r = await request(app.getHttpServer())
+      .get(`/api/v1/im/dialogs/${loggedUserData.profile.id}?limit=1000`)
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+      .send()
+    const dialogs: ImDialog[] = r.body.data
+
+    // remove
+    const res = await request(app.getHttpServer())
+      .delete(`/api/v1/system/user/${loggedUserData.profile.id}`)
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+      .send()
+
+    expect(res.status).toBe(200)
+
+    // check cant auth
+    const authRes = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({
+        email: userToCreate.email,
+        pass: userToCreate.pass,
+      })
+    expect(authRes.body).not.toHaveProperty('profile.id')
+    expect(authRes.body).not.toHaveProperty('jwt.accessToken')
+
+    // check removed user not exist in dialog list on other user
+    const firstDialog = dialogs[0]
+    const otherUser = firstDialog.users.find(u => u.id !== loggedUserData.profile.id)
+
+    const otherUserDialogsResp = await request(app.getHttpServer())
+      .get(`/api/v1/im/dialogs/${otherUser.id}?limit=1000`)
+      .set('Authorization', `Bearer ${authService.getTokenByPayload({
+        id: otherUser.id,
+        email: 'a@a.com',
+        role: UserRole.User,
+      })}`)
+      .send()
+    const otherUserDialogs: ImDialog[] = otherUserDialogsResp.body.data
+
+    let foundDialog = false
+    for (const d of otherUserDialogs) {
+      if (d.id === firstDialog.id) {
+        foundDialog = true
+      }
+    }
+
+    expect(foundDialog).toBeFalsy()
+  })
 })

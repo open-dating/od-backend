@@ -18,7 +18,7 @@ import * as stripHtml from 'string-strip-html'
 import {transformInputEmailToValidFormat} from '../../utils/transformers'
 import {SettingsFormDto} from './dto/settings-form-dto'
 import {UserHabits} from './user-habits.entity'
-import {validate} from 'class-validator'
+import {UserReasonRemove} from './enum/user-reason-remove.enum'
 
 @Injectable()
 export class UserEditService {
@@ -49,6 +49,7 @@ export class UserEditService {
     ent.location = depersonalizePoint(form.location)
     ent.role = role ? role : UserRole.User
     ent.unreadDialogs = []
+    ent.language = stripHtml(form.language || 'en')
 
     ent.habits = this.userHabitsRepository.create(form.habits || {})
 
@@ -126,6 +127,14 @@ export class UserEditService {
     })
   }
 
+  async updateUserLang(id: number, lang: string) {
+    return this.userRepository.update({
+      id,
+    }, {
+      language: stripHtml(lang),
+    })
+  }
+
   async updateProfileFields(id: number, form: EditFormDto): Promise<User> {
     const user = await this.userRepository.findOne({
       relations: ['photos', 'selfie', 'setting'],
@@ -185,5 +194,23 @@ export class UserEditService {
     await this.userRepository.save(user)
 
     return user
+  }
+
+  async removeProfile(id: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      relations: ['fcmTokens', 'photos'],
+      where: {id},
+    })
+
+    user.isRemoved = true
+    user.removedAt = new Date()
+    user.reasonRemove = UserReasonRemove.RemovedByUser
+
+    const tokens = await this.userFcmRepository.find({
+      where: {user},
+    })
+    await this.userFcmRepository.remove(tokens)
+
+    await this.userRepository.save(user)
   }
 }

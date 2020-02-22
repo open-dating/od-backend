@@ -142,4 +142,11 @@ export class RegFormDto {
     example: true,
   })
   tos: boolean
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    example: 'en',
+  })
+  language: string
 }

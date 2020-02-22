@@ -27,6 +27,7 @@ export class UserService {
       where: {
         email: transformInputEmailToValidFormat(email),
         passHash: getHashOfPass(pass),
+        isRemoved: false,
       },
     })
   }
@@ -64,6 +65,12 @@ export class UserService {
       .leftJoinAndSelect(`user.photos`, `photos`)
       .leftJoinAndSelect(`user.habits`, `habits`)
     const params: any = {}
+
+    /**
+     * not removed
+     */
+    query
+      .andWhere(`user.isRemoved != TRUE`)
 
     /**
      * age restrictions

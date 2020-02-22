@@ -12,9 +12,6 @@ services:
       - ./:/app
     environment:
       - ROOT_PATH=/app
-      - PORT=4300
-      - DOMAIN=localhost.loc
-      - HOST=http://localhost:4300
       - DB_HOST=od-backend-postgres
       - DB_PORT=5432
       - DB_USERNAME=postgres
@@ -56,7 +53,7 @@ services:
 
   adult-image-detector.od-backend:
     container_name: od-backend-adult-image-detector
-    image: grinat0/adult-image-detector:0.3.0
+    image: opendating/adult-image-detector
     ports:
       - 9191:9191
     networks:

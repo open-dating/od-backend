@@ -41,7 +41,9 @@ export class AdminGenerateService {
     for (let i = 0; i < form.count; i++) {
       try {
         const u = new RegFormDto()
-        u.firstname = faker.name.firstName()
+        u.firstname = faker.name.firstName(
+          form.gender === UserGender.Male ? 0 : 1,
+        )
         u.email = faker.internet.email()
         u.location = depersonalizePoint(form.location, 23500)
         u.pass = form.pass

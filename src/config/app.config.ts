@@ -3,15 +3,15 @@ import * as path from 'path'
 const rootPath = String(process.env.ROOT_PATH || path.join(__dirname, '/../../'))
 
 export const appConfig = {
-  port: Number(process.env.PORT || 3000),
+  port: Number(process.env.PORT || 4300),
   jwtSecret: String(process.env.JWT_SECRET),
   jwtSignOptions: {expiresIn: '365d'},
   passHashSalt: String(process.env.PASS_HASH_SALT),
   dnnFaceUrl: String(process.env.DNN_FACE_URL),
   dnnNSFWUrl: String(process.env.DNN_NSFW_URL),
   NSFWTreshold: Number(process.env.NSFW_TRESHOLD || 0.12),
-  host: String(process.env.HOST || 'http://localhost'),
-  domain: String(process.env.DOMAIN || 'localhost'),
+  host: String(process.env.HOST || 'http://localhost:4300'),
+  domain: String(process.env.DOMAIN || 'localhost.loc'),
   rootPath,
   fcmFilePath: path.join(rootPath, 'fcm.json'),
   image: {

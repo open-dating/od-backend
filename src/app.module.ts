@@ -20,7 +20,8 @@ import * as ormCommonConfig from './config/orm.common'
 import {MailModule} from './modules/mail/mail.module'
 import {StatisticModule} from './modules/statistic/statistic.module'
 import {UserHabits} from './modules/user/user-habits.entity'
-import {FCMService} from './modules/fcm/fcm.service'
+import {SystemModule} from './modules/system/system.module'
+import {FCMModule} from './modules/fcm/fcm.module'
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import {FCMService} from './modules/fcm/fcm.service'
     ComplaintModule,
     MailModule,
     StatisticModule,
-    FCMService,
+    SystemModule,
+    FCMModule,
     TypeOrmModule.forRoot({
       ...ormCommonConfig,
       entities: [

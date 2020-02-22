@@ -1,3 +1,6 @@
+// tslint:disable-next-line:no-var-requires
+require('dotenv').config()
+
 import {NestExpressApplication} from '@nestjs/platform-express'
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger'
 import {AppModule} from './app.module'
@@ -11,8 +14,6 @@ import {AdminModule} from './modules/admin/admin.module'
 import {AdminGenerateService} from './modules/admin/admin-generate.service'
 
 async function bootstrap() {
-  Logger.log(`Adminer on http://0.0.0.0:4301/?pgsql=${ormCommonConfig.host}&username=${ormCommonConfig.username}&db=${ormCommonConfig.database}&ns=public`)
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   })
@@ -39,9 +40,12 @@ async function bootstrap() {
 
   await app.listen(appConfig.port)
 
-  Logger.log(`Run on http://0.0.0.0:${appConfig.port}`)
-  Logger.log(`Swagger UI on http://0.0.0.0:${appConfig.port}/api/v1/doc`)
-  Logger.log(`WebSocket on http://0.0.0.0:${appConfig.port}/api/v1/ws?token=jwt_token Ws doc: http://0.0.0.0:${appConfig.port}/static/ws.html`)
+  Logger.log(`Adminer on http://0.0.0.0:4301/?pgsql=${ormCommonConfig.host}&username=${ormCommonConfig.username}&db=${ormCommonConfig.database}&ns=public`)
+  Logger.log(`You can create .env file and put into variables, e.g.: HOST=http://10.77.16.75:4300 for easy cross-platform development`)
+  Logger.log(`Go to fcm console and get own firebase config and put to fcm.json for debug fcm`)
+  Logger.log(`Run on ${appConfig.host}`)
+  Logger.log(`Swagger UI on ${appConfig.host}/api/v1/doc`)
+  Logger.log(`WebSocket on ${appConfig.host}/api/v1/ws?token=jwt_token Ws doc: ${appConfig.host}/static/ws.html`)
 
   await app.select(AdminModule).get(AdminGenerateService).createAdmin()
 }

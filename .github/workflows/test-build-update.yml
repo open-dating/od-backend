@@ -28,6 +28,9 @@ jobs:
         run: |
           docker logs od-backend-node
 
+      - name: Lint
+        run: docker exec od-backend-node npm run lint
+
       - name: Test
         run: docker exec od-backend-node npm run test
 

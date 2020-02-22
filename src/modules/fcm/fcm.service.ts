@@ -49,7 +49,7 @@ export class FCMService {
 
     const payload = {
       title: `New math`,
-      dialogId: dialog.id,
+      dialogId: String(dialog.id),
       type: FCMType.match,
     }
 
@@ -70,7 +70,7 @@ export class FCMService {
 
     const payload = {
       title: `New message`,
-      dialogId: message.dialog.id,
+      dialogId: String(message.dialog.id),
       type: FCMType.message,
     }
 
