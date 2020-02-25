@@ -1,5 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger'
-import {IsNotEmpty, Min, ArrayMinSize, ArrayMaxSize, IsNumber} from 'class-validator'
+import {IsNotEmpty, Min, ArrayMinSize, ArrayMaxSize, IsNumber, IsString, MaxLength, ValidateNested} from 'class-validator'
+import {EditFormHabitsDto} from './edit-form-habits-dto'
 
 export class EditFormDto {
   @IsNotEmpty()
@@ -16,4 +17,15 @@ export class EditFormDto {
   @ArrayMinSize(1)
   @ArrayMaxSize(6)
   photosIds: number[]
+
+  @ApiProperty({
+    example: '',
+  })
+  @IsString()
+  @MaxLength(1500)
+  bio: string
+
+  @ApiProperty()
+  @ValidateNested()
+  habits: EditFormHabitsDto
 }

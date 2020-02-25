@@ -137,12 +137,20 @@ export class UserEditService {
 
   async updateProfileFields(id: number, form: EditFormDto): Promise<User> {
     const user = await this.userRepository.findOne({
-      relations: ['photos', 'selfie', 'setting'],
+      relations: ['selfie', 'photos', 'setting', 'unreadDialogs', 'habits'],
       where: {id},
     })
 
     user.photos = await this.photoRepository.findByIds(form.photosIds)
     user.weight = form.weight
+    user.bio = stripHtml(form.bio)
+
+    if (form.habits) {
+      user.habits = {
+        ...user.habits,
+        ...form.habits,
+      }
+    }
 
     await this.userRepository.save(user)
 

@@ -77,6 +77,8 @@ export class User {
   @Column({default: false})
   acceptedUseDataInScience: boolean
 
+  @ApiProperty()
+  @Expose()
   @Column({default: ''})
   bio: string
 

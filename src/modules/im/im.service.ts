@@ -206,7 +206,10 @@ export class ImService {
   }
 
   async markDialogAsRead(dialogId: number, userId: number): Promise<ImDialog> {
-    const dialog = await this.findDialog(dialogId)
+    const dialog = await this.dialogRepository.findOne({
+      relations: ['users', 'users.photos', 'unreadByUsers'],
+      where: {id: dialogId},
+    })
 
     const markReadFor = dialog.unreadByUsers.find(u => u.id === userId)
     dialog.unreadByUsers = dialog.unreadByUsers.filter(u => u.id !== userId)
@@ -228,6 +231,9 @@ export class ImService {
     for (const dialogUser of dialog.users) {
       // send info for remove dialog from list
       this.wsMediator.emitMessage(dialogUser.id, WsOutEvent.ImDialog, dialog)
+
+      // mark as read
+      this.markDialogAsRead(dialog.id, dialogUser.id)
     }
 
     return this.dialogRepository.save(dialog)
@@ -291,6 +297,9 @@ export class ImService {
       for (const dialogUser of dialog.users) {
         // send info for remove dialog from list
         this.wsMediator.emitMessage(dialogUser.id, WsOutEvent.ImDialog, dialog)
+
+        // mark as read
+        this.markDialogAsRead(dialog.id, dialogUser.id)
       }
     }
   }

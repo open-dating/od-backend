@@ -36,7 +36,7 @@ docker-compose -f docker-compose.prod.yml up -d --build
 
 * [ ] calc dnn and distance is user profile
 * [ ] add donation emails
-* [ ] edit more user profile fields
+* [x] edit more user profile fields
 * [ ] check for lang typos
 * [ ] add support more algo in users search
 * [ ] write more tests

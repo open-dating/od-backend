@@ -10,6 +10,8 @@ import {AuthService} from '../src/modules/auth/auth.service'
 import {LoggedUserDto} from '../src/modules/auth/dto/logged-user-dto'
 import {ImDialog} from '../src/modules/im/im-dialog.entity'
 import {UserRole} from '../src/modules/user/enum/user-role.enum'
+import {User} from '../src/modules/user/user.entity'
+import {UserHabitPeriodicity} from '../src/modules/user/enum/user-habit-periodicity.enum'
 
 describe('App (e2e)', () => {
   let app: INestApplication
@@ -78,6 +80,56 @@ describe('App (e2e)', () => {
     expect(logged.body).toHaveProperty('jwt.accessToken')
 
     loggedUserData = logged.body
+  })
+
+  it('edit user profile', async () => {
+    expect.assertions(3)
+
+    await request(app.getHttpServer())
+      .patch('/api/v1/user/my-profile')
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+      .send({
+        photosIds: loggedUserData.profile.photos.map(p => p.id),
+        weight: 100,
+        bio: 'foo bar',
+      })
+
+    const res = await request(app.getHttpServer())
+      .get('/api/v1/user/my-profile')
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+
+    const profile: User = res.body
+
+    expect(profile).toHaveProperty('weight')
+    expect(profile.weight).toBe(100)
+    expect(profile.bio).toBe('foo bar')
+  })
+
+  it('edit user profile habits', async () => {
+    expect.assertions(3)
+
+    await request(app.getHttpServer())
+      .patch('/api/v1/user/my-profile')
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+      .send({
+        photosIds: loggedUserData.profile.photos.map(p => p.id),
+        weight: 100,
+        bio: '',
+        habits: {
+          concert: UserHabitPeriodicity.Many,
+          cinema: UserHabitPeriodicity.One,
+        },
+      })
+
+    const resWithHabits = await request(app.getHttpServer())
+      .get('/api/v1/user/my-profile')
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+
+    const profileWithHabits: User = resWithHabits.body
+    expect(profileWithHabits).toHaveProperty('habits')
+
+    expect(profileWithHabits.habits.concert).toBe(UserHabitPeriodicity.Many)
+    expect(profileWithHabits.habits.cinema).toBe(UserHabitPeriodicity.One)
   })
 
   it('seed users, check role acces', async () => {
