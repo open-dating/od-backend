@@ -141,6 +141,7 @@ export class PhotoService {
 
     const body = new FormData()
     body.append('image', fs.createReadStream(ent.filePath))
+    body.append('disableAnAlgorithm', 'true')
 
     const resp: any = await got.post(`${appConfig.dnnNSFWUrl}/api/v1/detect`, {
       body,
