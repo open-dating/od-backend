@@ -23,6 +23,7 @@ services:
       - PASS_HASH_SALT=${PASS_HASH_SALT}
       - DNN_FACE_URL=${DNN_FACE_URL}
       - DNN_NSFW_URL=${DNN_NSFW_URL}
+      - NODE_ENV=production
     networks:
       - od-network
     command: sh -c "npm i && npm run typeorm:run && npm run build && npm run start:prod"

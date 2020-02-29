@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as pkg from '../../package.json'
 
 const rootPath = String(process.env.ROOT_PATH || path.join(__dirname, '/../../'))
 
@@ -28,5 +29,9 @@ export const appConfig = {
       user: process.env.SMTP__USER || 'jayce.kirlin25@ethereal.email',
       pass: process.env.SMTP__PASS || 'YxRsGBUGHjUtepkBQ2',
     },
+  },
+  sentry: {
+    dsn: String(process.env.SENTRY__DSN || 'https://DUMMY@sentry.io/3271268'),
+    release: pkg.version,
   },
 }

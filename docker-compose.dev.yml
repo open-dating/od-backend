@@ -21,6 +21,7 @@ services:
       - PASS_HASH_SALT=342dsfs34
       - DNN_FACE_URL=http://od-backend-image_face_detector:5001
       - DNN_NSFW_URL=http://od-backend-adult-image-detector:9191
+      - NODE_ENV=development
     networks:
       - od-network
     command: sh -c "npm i && npm run typeorm:run && npm run start:debug"
