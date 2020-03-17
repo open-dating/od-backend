@@ -11,6 +11,8 @@ import {ItemsListDto} from '../shared/dto/items-list-dto'
 import {Feature} from '@turf/turf'
 import {DemographyStatDto} from './dto/demography-stat-dto'
 import {UserUseType} from './enum/user-use-type.enum'
+import {calcDistance} from '../../utils/geo'
+import {calcCubeDistance} from '../../utils/algos'
 
 @Injectable()
 export class UserService {
@@ -232,5 +234,16 @@ export class UserService {
     // console.log(query.getQuery())
 
     return query.getRawMany()
+  }
+
+  calcRelationsBetweenUsers(user: User, target: User) {
+    const dist = calcDistance(user.location, target.location)
+    const cube = calcCubeDistance(user.selfie.faceEncoding, target.selfie.faceEncoding)
+
+    const users = [user, target]
+    users.forEach(u => {
+      u.locationDistance = dist
+      u.cubeDistance = cube
+    })
   }
 }

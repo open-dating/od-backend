@@ -4,6 +4,7 @@ import {withScope, captureException, Handlers} from '@sentry/node'
 import {CallHandler} from '@nestjs/common/interfaces/features/nest-interceptor.interface'
 import {IncomingMessage} from 'http'
 import {JwtUserPayload} from '../../auth/interfaces/jwt-user-payload.interface'
+import {appConfig} from '../../../config/app.config'
 
 @Injectable()
 export class ErrorInterceptor implements NestInterceptor {
@@ -23,7 +24,9 @@ export class ErrorInterceptor implements NestInterceptor {
             })
           }
 
-          captureException(error)
+          if (appConfig.isProd) {
+            captureException(error)
+          }
         })
         throw error
       }))

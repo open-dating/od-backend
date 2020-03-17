@@ -34,11 +34,16 @@ export class UserController {
   async getProfile(@Request() req): Promise<User> {
     const isAdmin = req.user.role === UserRole.Admin
 
-    const user = await this.userService.findById(+req.params.userId)
+    const [user, me] = await Promise.all([
+      this.userService.findById(+req.params.userId),
+      this.userService.findById(+req.user.id),
+    ])
 
     if (user.isRemoved && !isAdmin) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
+
+    this.userService.calcRelationsBetweenUsers(me, user)
 
     return user
   }

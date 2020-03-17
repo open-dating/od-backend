@@ -34,4 +34,5 @@ export const appConfig = {
     dsn: String(process.env.SENTRY__DSN || 'https://DUMMY@sentry.io/3271268'),
     release: pkg.version,
   },
+  isProd: Boolean(process.env.NODE_ENV === 'production'),
 }

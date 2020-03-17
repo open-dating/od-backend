@@ -1,4 +1,4 @@
-import {BBox, Position, point, destination, randomPoint, Point} from '@turf/turf'
+import {BBox, Position, point, destination, randomPoint, Point, distance} from '@turf/turf'
 
 /**
  * Точность	Пример	Погрешность (вдоль меридина)	Погрешность вдоль параллели 55.75	Применение
@@ -52,4 +52,10 @@ export function depersonalizePoint(location: Point, dist = 1200): Point {
       features[0].geometry.coordinates[1],
     ),
   }
+}
+
+export function calcDistance(from: Point, to: Point) {
+  return distance(from, to, {
+    units: 'meters',
+  })
 }

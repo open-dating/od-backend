@@ -1,3 +1,5 @@
+import * as mathjs from 'mathjs'
+
 export function arrayToBeetWiseArray<T>(items: T[]): T[][] {
   const out: T[][] = []
 
@@ -11,4 +13,8 @@ export function arrayToBeetWiseArray<T>(items: T[]): T[][] {
   }
 
   return out
+}
+
+export function calcCubeDistance(from: number[], to: number[]): number {
+  return mathjs.norm(mathjs.subtract(from, to) as any) as number
 }

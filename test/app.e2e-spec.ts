@@ -22,6 +22,7 @@ describe('App (e2e)', () => {
   let foundedUsers: any
   let matchedUser: LoggedUserDto
   let matchedDialog: ImDialog
+  let anyUserId: number
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -190,7 +191,25 @@ describe('App (e2e)', () => {
     expect(items.body.data[0]).not.toHaveProperty('email')
     expect(items.body.data[0]).not.toHaveProperty('selfie')
 
+    anyUserId = items.body.data[0].id
     foundedUsers = items.body.data
+  })
+
+  it('view any user profile', async () => {
+    expect.assertions(3)
+
+    const resp = await request(app.getHttpServer())
+      .get(`/api/v1/user/profile/${anyUserId}`)
+      .set('Authorization', `Bearer ${loggedUserData.jwt.accessToken}`)
+      .send()
+
+    const user: User = resp.body
+
+    // check for data leak
+    expect(user).not.toHaveProperty('email')
+
+    expect(user.locationDistance > 0).toBeTruthy()
+    expect(user.cubeDistance > 0).toBeTruthy()
   })
 
   it('actions: pass, like, match', async () => {

@@ -34,7 +34,7 @@ docker-compose -f docker-compose.prod.yml up -d --build
 
 ## Roadmap
 * [x] connect to sentry
-* [ ] calc dnn and distance is user profile
+* [x] calc dnn and distance is user profile
 * [ ] add donation emails
 * [x] edit more user profile fields
 * [ ] check for lang typos
