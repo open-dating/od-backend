@@ -56,3 +56,6 @@ services:
 
 volumes:
   od-postgres-test:
+
+networks:
+  od-network:
