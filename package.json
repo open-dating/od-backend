@@ -6,22 +6,30 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main",
+    "start:dev": "cross-env NODE_ENV=development nest start --watch",
+    "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
+    "start:prod": "cross-env NODE_ENV=production node dist/src/main",
+    "start:migrate-n-dev": "npm run typeorm:run && npm run start:debug",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "lint:fix": "tslint -p tsconfig.json -c tslint.json --fix",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/config/orm.migration.ts",
-    "typeorm:migrate": "npm run typeorm migration:generate -- -n",
+    "typeorm:generate": "npm run typeorm migration:generate -- -n",
     "typeorm:run": "npm run typeorm migration:run",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles"
+    "test:e2e": "jest --config ./test/jest-e2e.json --detectOpenHandles",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:test": "docker-compose -f docker-compose.dev.yml -f docker-compose.test.yml up",
+    "docker:exec:test": "docker exec od-backend-node npm run test"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run lint"
+    }
   },
   "dependencies": {
     "@nestjs/common": "^6.7.2",
@@ -76,6 +84,8 @@
     "@types/sharp": "^0.23.1",
     "@types/socket.io": "^2.1.4",
     "@types/supertest": "^2.0.8",
+    "cross-env": "^7.0.2",
+    "husky": "^4.2.5",
     "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "supertest": "^4.0.2",

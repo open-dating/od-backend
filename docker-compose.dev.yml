@@ -1,39 +1,16 @@
 version: '2'
 
 services:
-  node.od-backend:
-    container_name: od-backend-node
-    image: node:12.13.0-alpine
-    working_dir: /app
-    ports:
-      - 4300:4300
-      - 9229:9229
-    volumes:
-      - ./:/app
-    environment:
-      - ROOT_PATH=/app
-      - DB_HOST=od-backend-postgres
-      - DB_PORT=5432
-      - DB_USERNAME=postgres
-      - DB_PASS=mysecretpassword
-      - DB_NAME=od
-      - JWT_SECRET=foobar
-      - PASS_HASH_SALT=342dsfs34
-      - DNN_FACE_URL=http://od-backend-image_face_detector:5001
-      - DNN_NSFW_URL=http://od-backend-adult-image-detector:9191
-      - NODE_ENV=development
-    networks:
-      - od-network
-    command: sh -c "npm i && npm run typeorm:run && npm run start:debug"
-
   postgres.od-backend:
     container_name: od-backend-postgres
     image: mdillon/postgis:11-alpine
     environment:
       POSTGRES_DB: od
       POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - 4332:5432
     volumes:
-      - od-postgres:/var/lib/postgresql/data
+      - od-postgres-dev:/var/lib/postgresql/data
     networks:
       - od-network
 
@@ -61,8 +38,7 @@ services:
       - od-network
 
 volumes:
-  od-postgres:
-    external: true
+  od-postgres-dev:
 
 networks:
   od-network:

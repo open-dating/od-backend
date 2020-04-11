@@ -1,6 +1,3 @@
-// tslint:disable-next-line:no-var-requires
-require('dotenv').config()
-
 import {NestExpressApplication} from '@nestjs/platform-express'
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger'
 import {AppModule} from './app.module'
@@ -46,6 +43,7 @@ async function bootstrap() {
   Logger.log(`Run on ${appConfig.host}`)
   Logger.log(`Swagger UI on ${appConfig.host}/api/v1/doc`)
   Logger.log(`WebSocket on ${appConfig.host}/api/v1/ws?token=jwt_token Ws doc: ${appConfig.host}/static/ws.html`)
+  Logger.log(`Mode=${process.env.NODE_ENV}`)
 
   await app.select(AdminModule).get(AdminGenerateService).createAdmin()
 }

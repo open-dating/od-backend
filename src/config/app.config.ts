@@ -35,4 +35,5 @@ export const appConfig = {
     release: pkg.version,
   },
   isProd: Boolean(process.env.NODE_ENV === 'production'),
+  isDev: Boolean(process.env.NODE_ENV === 'development'),
 }

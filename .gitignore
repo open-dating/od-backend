@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/test_modules
 
 # Logs
 logs
@@ -38,7 +39,6 @@ lerna-debug.log*
 
 # Uploads
 uploads/photo
-!uploads/photo/system/*
 uploads/tmp
 
 fcm.json

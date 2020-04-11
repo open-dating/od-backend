@@ -1,5 +1,6 @@
 import {ConnectionOptions} from 'typeorm'
 import * as ormCommonConfig from './orm.common'
+import {entities} from '../modules/shared/entities'
 
 const config: ConnectionOptions = {
   ...ormCommonConfig,
@@ -19,6 +20,8 @@ const config: ConnectionOptions = {
   cli: {
     migrationsDir: 'src/migrations',
   },
+
+  entities,
 }
 
 export = config

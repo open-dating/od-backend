@@ -1,3 +1,6 @@
+// tslint:disable-next-line:no-var-requires
+require('dotenv').config()
+
 import {Module} from '@nestjs/common'
 import {SentryModule} from '@ntegral/nestjs-sentry'
 import {TypeOrmModule} from '@nestjs/typeorm'
@@ -12,22 +15,14 @@ import {WsModule} from './modules/ws/ws.module'
 import {PhotoModule} from './modules/photo/photo.module'
 import {ChoiceModule} from './modules/choice/choice.module'
 import {ImModule} from './modules/im/im.module'
-import {User} from './modules/user/user.entity'
-import {UserFcm} from './modules/user/user-fcm.entity'
-import {UserSetting} from './modules/user/user-setting.entity'
-import {Photo} from './modules/photo/photo.enity'
-import {Choice} from './modules/choice/choice.entity'
-import {ImDialog} from './modules/im/im-dialog.entity'
-import {ImMessage} from './modules/im/im-message.entity'
 import {AdminModule} from './modules/admin/admin.module'
 import {ComplaintModule} from './modules/complaint/complaint.module'
-import {Complaint} from './modules/complaint/complaint.entity'
 import {MailModule} from './modules/mail/mail.module'
 import {StatisticModule} from './modules/statistic/statistic.module'
-import {UserHabits} from './modules/user/user-habits.entity'
 import {SystemModule} from './modules/system/system.module'
 import {FCMModule} from './modules/fcm/fcm.module'
 import {ErrorInterceptor} from './modules/shared/interceptors/error.interceptor'
+import {entities} from './modules/shared/entities'
 
 @Module({
   imports: [
@@ -45,18 +40,9 @@ import {ErrorInterceptor} from './modules/shared/interceptors/error.interceptor'
     FCMModule,
     TypeOrmModule.forRoot({
       ...ormCommonConfig,
-      entities: [
-        User,
-        Photo,
-        Choice,
-        ImDialog,
-        ImMessage,
-        UserFcm,
-        UserSetting,
-        UserHabits,
-        Complaint,
-      ],
-      synchronize: true,
+      entities,
+      // Sync only in dev mode. On test or prod use migrations
+      synchronize: appConfig.isDev,
     }),
     SentryModule.forRoot({
       dsn: appConfig.sentry.dsn,

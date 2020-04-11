@@ -2,4 +2,57 @@ version: '2'
 
 services:
   node.od-backend:
-    command: sh -c "npm i && npm run typeorm:run && npm run build && npm run start:prod"
+    container_name: od-backend-node
+    image: node:12.13.0-alpine
+    working_dir: /app
+    ports:
+      - 4300:4300
+    volumes:
+      - ./:/app
+    environment:
+      - ROOT_PATH=/app
+      - JWT_SECRET=foobar
+      - PASS_HASH_SALT=342dsfs34
+      - DNN_FACE_URL=http://od-backend-image_face_detector:5001
+      - DNN_NSFW_URL=http://od-backend-adult-image-detector:9191
+      - DB_HOST=od-backend-postgres-test
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASS=mysecretpassword
+      - DB_NAME=od-test
+      - NODE_ENV=testing
+    networks:
+      - od-network
+    command: sh -c "npm ci && npm run typeorm:run && npm run build && npm run start:prod"
+
+  postgres-test.od-backend:
+    container_name: od-backend-postgres-test
+    image: mdillon/postgis:11-alpine
+    environment:
+      POSTGRES_DB: od-test
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - 4333:5432
+    volumes:
+      - od-postgres-test:/var/lib/postgresql/data
+    networks:
+      - od-network
+
+  image_face_detector.od-backend:
+    container_name: od-backend-image_face_detector
+    image: grinat0/image_face_detector:0.0.3
+    ports:
+      - 5001:5001
+    networks:
+      - od-network
+
+  adult-image-detector.od-backend:
+    container_name: od-backend-adult-image-detector
+    image: opendating/adult-image-detector
+    ports:
+      - 9191:9191
+    networks:
+      - od-network
+
+volumes:
+  od-postgres-test:

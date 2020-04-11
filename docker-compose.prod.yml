@@ -3,12 +3,14 @@ version: '2'
 services:
   node.od-backend:
     container_name: od-backend-node
-    image: node:12.13.0-alpine
+    image: opendating/od-backend:latest
     working_dir: /app
     ports:
       - 4300:4300
     volumes:
-      - ./:/app
+      - ./fcm.json:/app/fcm.json
+      - ./uploads/photo:/app/uploads/photo
+      - ./uploads/tmp:/app/uploads/tmp
     environment:
       - ROOT_PATH=/app
       - PORT=4300
@@ -26,7 +28,7 @@ services:
       - NODE_ENV=production
     networks:
       - od-network
-    command: sh -c "npm i && npm run typeorm:run && npm run build && npm run start:prod"
+    command: sh -c "npm run typeorm:run && npm run start:prod"
 
   postgres.od-backend:
     container_name: od-backend-postgres
