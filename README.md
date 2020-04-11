@@ -3,6 +3,8 @@ Open Dating is open source project like Tinder and others similar service, with 
 
 More info on project site: https://open-dating.org/
 
+Available api endpoints: https://app.open-dating.org/api/v1/doc/
+
 ### Development
 Install deps:
 
@@ -65,7 +67,7 @@ npm run docker:exec:test
 ```
 
 ### Production
-Set up values in .env as .env.example and run
+Set up values in .env as .env.example-prod and run
 ```bash
 docker volume create --name=od-postgres
 
@@ -81,3 +83,5 @@ docker-compose -f docker-compose.prod.yml up -d --build
 * [ ] add support more algo in users search
 * [ ] write more tests
 * [ ] add multilang support
+* [ ] run on prod without docker-compose and .env files
+

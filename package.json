@@ -2,6 +2,14 @@
   "name": "od-backend",
   "version": "0.3.0",
   "license": "GPL-3.0-or-later",
+  "homepage": "https://open-dating.org/",
+  "bugs": {
+    "url": "https://github.com/open-dating/od-backend/issues"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/open-dating/od-backend.git"
+  },
   "author": "Gabdrashitov Rinat <paladin2012gnu@gmail.com>",
   "scripts": {
     "prebuild": "rimraf dist",
