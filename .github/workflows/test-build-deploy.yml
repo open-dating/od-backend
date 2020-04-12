@@ -3,7 +3,7 @@ on:
     tags:
       - v*
 
-name: Test, build, update server
+name: Test, build, deploy
 jobs:
   master:
     runs-on: ubuntu-latest
@@ -32,6 +32,22 @@ jobs:
 
       - name: Test
         run: docker exec od-backend-node npm run test
+
+      - name: Codecov unit
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/clover.xml
+          flags: e2etests
+          fail_ci_if_error: true
+
+      - name: Codecov e2e
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage-e2e/clover.xml
+          flags: unittests
+          fail_ci_if_error: true
 
       - name: Login in docker registry
         run: |

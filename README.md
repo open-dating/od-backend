@@ -1,4 +1,11 @@
 ## od-backend
+
+[![Docker](https://img.shields.io/docker/pulls/opendating/od-backend)](https://hub.docker.com/repository/docker/opendating/od-backend/tags)
+![License](https://img.shields.io/github/license/open-dating/od-backend)
+[![codecov](https://codecov.io/gh/open-dating/od-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/open-dating/od-backend)
+[![DeepScan grade](https://deepscan.io/api/teams/2754/projects/9569/branches/126329/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=2754&pid=9569&bid=126329)
+![Github CI](https://github.com/open-dating/od-backend/workflows/Test,%20build,%20deploy/badge.svg?branch=master)
+
 Open Dating is open source project like Tinder and others similar service, with lot of differents.
 
 More info on project site: https://open-dating.org/
