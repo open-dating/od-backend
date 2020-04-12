@@ -1,17 +1,21 @@
 import * as path from 'path'
 import * as pkg from '../../package.json'
+import * as ip from 'internal-ip'
 
-const rootPath = String(process.env.ROOT_PATH || path.join(__dirname, '/../../'))
+const rootPath = String(process.env.ROOT_PATH || process.cwd())
+const port = Number(process.env.PORT || 4300)
+const internalIp = ip.v4.sync()
 
 export const appConfig = {
-  port: Number(process.env.PORT || 4300),
+  port,
+  internalIp,
   jwtSecret: String(process.env.JWT_SECRET),
   jwtSignOptions: {expiresIn: '365d'},
   passHashSalt: String(process.env.PASS_HASH_SALT),
   dnnFaceUrl: String(process.env.DNN_FACE_URL),
   dnnNSFWUrl: String(process.env.DNN_NSFW_URL),
   NSFWTreshold: Number(process.env.NSFW_TRESHOLD || 0.12),
-  host: String(process.env.HOST || 'http://localhost:4300'),
+  host: String(process.env.HOST || `http://${internalIp}:${port}`),
   domain: String(process.env.DOMAIN || 'localhost.loc'),
   rootPath,
   fcmFilePath: path.join(rootPath, 'fcm.json'),
@@ -23,7 +27,7 @@ export const appConfig = {
   smtp: {
     robotEmail: process.env.SMTP__ROBOT_EMAIL || 'jayce.kirlin25@ethereal.email',
     host: process.env.SMTP__HOST || 'smtp.ethereal.email',
-    port: Number(process.env.SMTP__HOST || 587),
+    port: Number(process.env.SMTP__PORT || 587),
     secure: Boolean(process.env.SMTP__SECURE || false),
     auth: {
       user: process.env.SMTP__USER || 'jayce.kirlin25@ethereal.email',

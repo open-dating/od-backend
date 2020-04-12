@@ -17,9 +17,7 @@ Install deps:
 
 Init envs:
 
-Create .env and copy all from .env.example with
-replace ROOT_PATH to you folder with that project and you
-can replace HOST with you ip or host if you used project for mobile development
+Create .env and copy all from .env.example
 
 Run:
 

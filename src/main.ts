@@ -37,13 +37,14 @@ async function bootstrap() {
 
   await app.listen(appConfig.port)
 
-  Logger.log(`Adminer on http://0.0.0.0:4301/?pgsql=${ormCommonConfig.host}&username=${ormCommonConfig.username}&db=${ormCommonConfig.database}&ns=public`)
-  Logger.log(`You can create .env file and put into variables, e.g.: HOST=http://10.77.16.75:4300 for easy cross-platform development`)
+  Logger.log(`Adminer on http://${appConfig.internalIp}:4301/?pgsql=od-backend-postgres&username=${ormCommonConfig.username}&db=${ormCommonConfig.database}&ns=public`)
   Logger.log(`Go to fcm console and get own firebase config and put to fcm.json for debug fcm`)
   Logger.log(`Run on ${appConfig.host}`)
+  Logger.log(`If ${appConfig.host} wrong you can insert value in .env as: HOST=http://10.77.16.75:${appConfig.port}`)
   Logger.log(`Swagger UI on ${appConfig.host}/api/v1/doc`)
   Logger.log(`WebSocket on ${appConfig.host}/api/v1/ws?token=jwt_token Ws doc: ${appConfig.host}/static/ws.html`)
   Logger.log(`Mode=${process.env.NODE_ENV}`)
+  Logger.log(`rootPath=${appConfig.rootPath}`)
 
   await app.select(AdminModule).get(AdminGenerateService).createAdmin()
 }
