@@ -38,7 +38,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/clover.xml
-          flags: e2etests
+          flags: unittests
           fail_ci_if_error: true
 
       - name: Codecov e2e
@@ -46,7 +46,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage-e2e/clover.xml
-          flags: unittests
+          flags: e2etests
           fail_ci_if_error: true
 
       - name: Login in docker registry
