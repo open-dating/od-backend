@@ -53,11 +53,17 @@ jobs:
         run: |
           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
       - name: Build and push image
         run: |
           docker build --no-cache=true . -t od-backend
           docker tag od-backend opendating/od-backend:latest
           docker push opendating/od-backend:latest
+          docker tag od-backend opendating/od-backend:${{ steps.get_version.outputs.VERSION }}
+          docker push opendating/od-backend:${{ steps.get_version.outputs.VERSION }}
 
       - name: Connect to server and update
         uses: appleboy/ssh-action@master
